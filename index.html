@@ -1,0 +1,332 @@
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
+    <title>QZ Tray Sample Page</title>
+</head>
+
+<!-- Required scripts -->
+<script type="text/javascript" src="js/qz-tray.js"></script>
+
+<!-- Pollyfills -->
+<script type="text/javascript" src="js/sample/promise-polyfill-8.1.3.min.js"></script>
+<script type="text/javascript" src="js/sample/whatwg-fetch-3.0.0.min.js"></script>
+
+<!-- Page styling -->
+<script type="text/javascript" src="js/sample/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/sample/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="main.js"></script> -->
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+
+
+<body id="qz-page" role="document">
+    <button onclick="formatedReceipt()">Look</button>
+</body>
+
+
+<script>
+    /// Authentication setup ///
+    qz.security.setCertificatePromise(function (resolve, reject) {
+        //Preferred method - from server
+        //        fetch("assets/signing/digital-certificate.txt", {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+        //          .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+
+        //Alternate method 1 - anonymous
+        //        resolve();  // remove this line in live environment
+
+        //Alternate method 2 - direct
+        resolve("-----BEGIN CERTIFICATE-----\n" +
+            "MIIFAzCCAuugAwIBAgICEAIwDQYJKoZIhvcNAQEFBQAwgZgxCzAJBgNVBAYTAlVT\n" +
+            "MQswCQYDVQQIDAJOWTEbMBkGA1UECgwSUVogSW5kdXN0cmllcywgTExDMRswGQYD\n" +
+            "VQQLDBJRWiBJbmR1c3RyaWVzLCBMTEMxGTAXBgNVBAMMEHF6aW5kdXN0cmllcy5j\n" +
+            "b20xJzAlBgkqhkiG9w0BCQEWGHN1cHBvcnRAcXppbmR1c3RyaWVzLmNvbTAeFw0x\n" +
+            "NTAzMTkwMjM4NDVaFw0yNTAzMTkwMjM4NDVaMHMxCzAJBgNVBAYTAkFBMRMwEQYD\n" +
+            "VQQIDApTb21lIFN0YXRlMQ0wCwYDVQQKDAREZW1vMQ0wCwYDVQQLDAREZW1vMRIw\n" +
+            "EAYDVQQDDAlsb2NhbGhvc3QxHTAbBgkqhkiG9w0BCQEWDnJvb3RAbG9jYWxob3N0\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtFzbBDRTDHHmlSVQLqjY\n" +
+            "aoGax7ql3XgRGdhZlNEJPZDs5482ty34J4sI2ZK2yC8YkZ/x+WCSveUgDQIVJ8oK\n" +
+            "D4jtAPxqHnfSr9RAbvB1GQoiYLxhfxEp/+zfB9dBKDTRZR2nJm/mMsavY2DnSzLp\n" +
+            "t7PJOjt3BdtISRtGMRsWmRHRfy882msBxsYug22odnT1OdaJQ54bWJT5iJnceBV2\n" +
+            "1oOqWSg5hU1MupZRxxHbzI61EpTLlxXJQ7YNSwwiDzjaxGrufxc4eZnzGQ1A8h1u\n" +
+            "jTaG84S1MWvG7BfcPLW+sya+PkrQWMOCIgXrQnAsUgqQrgxQ8Ocq3G4X9UvBy5VR\n" +
+            "CwIDAQABo3sweTAJBgNVHRMEAjAAMCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdl\n" +
+            "bmVyYXRlZCBDZXJ0aWZpY2F0ZTAdBgNVHQ4EFgQUpG420UhvfwAFMr+8vf3pJunQ\n" +
+            "gH4wHwYDVR0jBBgwFoAUkKZQt4TUuepf8gWEE3hF6Kl1VFwwDQYJKoZIhvcNAQEF\n" +
+            "BQADggIBAFXr6G1g7yYVHg6uGfh1nK2jhpKBAOA+OtZQLNHYlBgoAuRRNWdE9/v4\n" +
+            "J/3Jeid2DAyihm2j92qsQJXkyxBgdTLG+ncILlRElXvG7IrOh3tq/TttdzLcMjaR\n" +
+            "8w/AkVDLNL0z35shNXih2F9JlbNRGqbVhC7qZl+V1BITfx6mGc4ayke7C9Hm57X0\n" +
+            "ak/NerAC/QXNs/bF17b+zsUt2ja5NVS8dDSC4JAkM1dD64Y26leYbPybB+FgOxFu\n" +
+            "wou9gFxzwbdGLCGboi0lNLjEysHJBi90KjPUETbzMmoilHNJXw7egIo8yS5eq8RH\n" +
+            "i2lS0GsQjYFMvplNVMATDXUPm9MKpCbZ7IlJ5eekhWqvErddcHbzCuUBkDZ7wX/j\n" +
+            "unk/3DyXdTsSGuZk3/fLEsc4/YTujpAjVXiA1LCooQJ7SmNOpUa66TPz9O7Ufkng\n" +
+            "+CoTSACmnlHdP7U9WLr5TYnmL9eoHwtb0hwENe1oFC5zClJoSX/7DRexSJfB7YBf\n" +
+            "vn6JA2xy4C6PqximyCPisErNp85GUcZfo33Np1aywFv9H+a83rSUcV6kpE/jAZio\n" +
+            "5qLpgIOisArj1HTM6goDWzKhLiR/AeG3IJvgbpr9Gr7uZmfFyQzUjvkJ9cybZRd+\n" +
+            "G8azmpBBotmKsbtbAU/I/LVk8saeXznshOVVpDRYtVnjZeAneso7\n" +
+            "-----END CERTIFICATE-----\n" +
+            "--START INTERMEDIATE CERT--\n" +
+            "-----BEGIN CERTIFICATE-----\n" +
+            "MIIFEjCCA/qgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgawxCzAJBgNVBAYTAlVT\n" +
+            "MQswCQYDVQQIDAJOWTESMBAGA1UEBwwJQ2FuYXN0b3RhMRswGQYDVQQKDBJRWiBJ\n" +
+            "bmR1c3RyaWVzLCBMTEMxGzAZBgNVBAsMElFaIEluZHVzdHJpZXMsIExMQzEZMBcG\n" +
+            "A1UEAwwQcXppbmR1c3RyaWVzLmNvbTEnMCUGCSqGSIb3DQEJARYYc3VwcG9ydEBx\n" +
+            "emluZHVzdHJpZXMuY29tMB4XDTE1MDMwMjAwNTAxOFoXDTM1MDMwMjAwNTAxOFow\n" +
+            "gZgxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOWTEbMBkGA1UECgwSUVogSW5kdXN0\n" +
+            "cmllcywgTExDMRswGQYDVQQLDBJRWiBJbmR1c3RyaWVzLCBMTEMxGTAXBgNVBAMM\n" +
+            "EHF6aW5kdXN0cmllcy5jb20xJzAlBgkqhkiG9w0BCQEWGHN1cHBvcnRAcXppbmR1\n" +
+            "c3RyaWVzLmNvbTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANTDgNLU\n" +
+            "iohl/rQoZ2bTMHVEk1mA020LYhgfWjO0+GsLlbg5SvWVFWkv4ZgffuVRXLHrwz1H\n" +
+            "YpMyo+Zh8ksJF9ssJWCwQGO5ciM6dmoryyB0VZHGY1blewdMuxieXP7Kr6XD3GRM\n" +
+            "GAhEwTxjUzI3ksuRunX4IcnRXKYkg5pjs4nLEhXtIZWDLiXPUsyUAEq1U1qdL1AH\n" +
+            "EtdK/L3zLATnhPB6ZiM+HzNG4aAPynSA38fpeeZ4R0tINMpFThwNgGUsxYKsP9kh\n" +
+            "0gxGl8YHL6ZzC7BC8FXIB/0Wteng0+XLAVto56Pyxt7BdxtNVuVNNXgkCi9tMqVX\n" +
+            "xOk3oIvODDt0UoQUZ/umUuoMuOLekYUpZVk4utCqXXlB4mVfS5/zWB6nVxFX8Io1\n" +
+            "9FOiDLTwZVtBmzmeikzb6o1QLp9F2TAvlf8+DIGDOo0DpPQUtOUyLPCh5hBaDGFE\n" +
+            "ZhE56qPCBiQIc4T2klWX/80C5NZnd/tJNxjyUyk7bjdDzhzT10CGRAsqxAnsjvMD\n" +
+            "2KcMf3oXN4PNgyfpbfq2ipxJ1u777Gpbzyf0xoKwH9FYigmqfRH2N2pEdiYawKrX\n" +
+            "6pyXzGM4cvQ5X1Yxf2x/+xdTLdVaLnZgwrdqwFYmDejGAldXlYDl3jbBHVM1v+uY\n" +
+            "5ItGTjk+3vLrxmvGy5XFVG+8fF/xaVfo5TW5AgMBAAGjUDBOMB0GA1UdDgQWBBSQ\n" +
+            "plC3hNS56l/yBYQTeEXoqXVUXDAfBgNVHSMEGDAWgBQDRcZNwPqOqQvagw9BpW0S\n" +
+            "BkOpXjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAJIO8SiNr9jpLQ\n" +
+            "eUsFUmbueoxyI5L+P5eV92ceVOJ2tAlBA13vzF1NWlpSlrMmQcVUE/K4D01qtr0k\n" +
+            "gDs6LUHvj2XXLpyEogitbBgipkQpwCTJVfC9bWYBwEotC7Y8mVjjEV7uXAT71GKT\n" +
+            "x8XlB9maf+BTZGgyoulA5pTYJ++7s/xX9gzSWCa+eXGcjguBtYYXaAjjAqFGRAvu\n" +
+            "pz1yrDWcA6H94HeErJKUXBakS0Jm/V33JDuVXY+aZ8EQi2kV82aZbNdXll/R6iGw\n" +
+            "2ur4rDErnHsiphBgZB71C5FD4cdfSONTsYxmPmyUb5T+KLUouxZ9B0Wh28ucc1Lp\n" +
+            "rbO7BnjW\n" +
+            "-----END CERTIFICATE-----\n");
+    });
+
+    qz.security.setSignatureAlgorithm("SHA512"); // Since 2.1
+    qz.security.setSignaturePromise(function (toSign) {
+        return function (resolve, reject) {
+            //Preferred method - from server
+            //            fetch("/secure/url/for/sign-message?request=" + toSign, {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+            //              .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+
+            //Alternate method - unsigned
+            resolve(); // remove this line in live environment
+        };
+    });
+    launchQZ()
+
+    /// Connection ///
+    function launchQZ() {
+        if (!qz.websocket.isActive()) {
+            window.location.assign("qz:launch");
+            //Retry 5 times, pausing 1 second between each attempt
+            startConnection({ retries: 5, delay: 1 });
+        }
+    }
+
+    function startConnection(config) {
+        if (!qz.websocket.isActive()) {
+            // updateState('Waiting', 'default');
+
+            qz.websocket.connect(config).then(function () {
+                // updateState('Active', 'success');
+                // findVersion();
+            }).catch((err)=>{
+
+            });
+        } else {
+            // displayMessage('An active connection with QZ already exists.', 'alert-warning');
+        }
+    }
+
+    function endConnection() {
+        if (qz.websocket.isActive()) {
+            qz.websocket.disconnect().then(function () {
+                updateState('Inactive', 'default');
+            }).catch(handleConnectionError);
+        } else {
+            displayMessage('No active connection with QZ exists.', 'alert-warning');
+        }
+    }
+
+    
+    
+var data={
+  "orderlines": [
+    {
+      "quantity": 1,
+      "unit_name": "Unit(s)",
+      "price": 920,
+      "discount": 0,
+      "product_name": "MAZDA 323 (96-) - CORNER LAMP (216-1644) - RH",
+      "price_display": 920,
+      "price_with_tax": 920,
+      "price_without_tax": 793.1,
+      "tax": 126.9,
+      "product_description": false,
+      "product_description_sale": false
+    },
+    {
+      "quantity": 1,
+      "unit_name": "Unit(s)",
+      "price": 2560,
+      "discount": 0,
+      "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - LH",
+      "price_display": 2560,
+      "price_with_tax": 2560,
+      "price_without_tax": 2206.9,
+      "tax": 353.1,
+      "product_description": false,
+      "product_description_sale": false
+    },
+    {
+      "quantity": 1,
+      "unit_name": "Unit(s)",
+      "price": 2560,
+      "discount": 0,
+      "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - RH",
+      "price_display": 2560,
+      "price_with_tax": 2560,
+      "price_without_tax": 2206.9,
+      "tax": 353.1,
+      "product_description": false,
+      "product_description_sale": false
+    }
+  ],
+  "paymentlines": [
+    {
+      "amount": 6040,
+      "journal": "Cash (KES)"
+    }
+  ],
+  "subtotal": 6040,
+  "total_with_tax": 6040.000000000001,
+  "total_without_tax": 5206.900000000001,
+  "total_tax": 833.1,
+  "total_paid": 6040,
+  "total_discount": 0,
+  "tax_details": [
+    {
+      "amount": 833.1,
+      "tax": {
+        "name": "Sales VAT 16.00% Inclusive",
+        "child_ids": [],
+        "amount": 0.16,
+        "child_depend": false,
+        "include_base_amount": false,
+        "type": "percent",
+        "id": 12,
+        "price_include": true,
+        "child_taxes": {}
+      },
+      "name": "Sales VAT 16.00% Inclusive"
+    }
+  ],
+  "change": -9.094947017729282e-13,
+  "name": "Order 00109-064-0048",
+  "client": null,
+  "invoice_id": null,
+  "cashier": "Administrator",
+  "header": "",
+  "footer": "",
+  "precision": {
+    "price": 2,
+    "money": 2,
+    "quantity": 3
+  },
+  "date": {
+    "year": 2021,
+    "month": 1,
+    "date": 3,
+    "day": 3,
+    "hour": 14,
+    "minute": 38,
+    "isostring": "2021-02-03T11:38:20.900Z",
+    "localestring": "2/3/2021, 2:38:20 PM"
+  },
+  "company": {
+    "email": "sales@autolampskenya.com",
+    "website": "http://www.autolampskenya.com",
+    "company_registry": "P051363500N",
+    "contact_address": "Autolamps Trading Ltd, Godown",
+    "vat": false,
+    "name": "Godown",
+    "phone": "0700-158482",
+  },
+  "shop": {
+    "name": "Stock"
+  },
+  "currency": {
+    "name": "KES",
+    "rounding": 0.01,
+    "symbol": "KSh",
+    "position": "after",
+    "id": 97,
+    "accuracy": 4,
+    "decimals": 2
+  }
+}
+const formatedReceipt=()=>{
+var config = qz.configs.create("Generic-Text-Only");
+let chunk = [];
+const init= '\x1B' + '\x40';
+const alignCenter = '\x1B' + '\x61' + '\x31';
+const lineBreake= '\x0A';
+const alignRight ='\x1B' + '\x61' + '\x32';
+const alignLeft ='\x1B' + '\x61' + '\x30';
+const boldOn ='\x1B' + '\x45' + '\x0D';
+const boldOff ='\x1B' + '\x45' + '\x0A';
+const emMode = '\x1B' + '\x21' + '\x30';
+const emModeOff ='\x1B' + '\x21' + '\x0A' + '\x1B' + '\x45' + '\x0A';
+const smallText= '\x1B' + '\x4D' + '\x31';
+const normalText ='\x1B' + '\x4D' + '\x30';
+const paperCut='\x1B' + '\x69';
+const line =  '------------------------------------------' + '\x0A';
+
+chunk.push(init);
+chunk.push(alignCenter)
+chunk.push(boldOn)
+chunk.push(emMode)
+chunk.push(data.company['contact_address']+lineBreake)
+chunk.push(emModeOff)
+chunk.push(boldOff)
+chunk.push(lineBreake)
+chunk.push(`${data.company['phone']}  ${data.company['email']+lineBreake}`)
+chunk.push(boldOn)
+chunk.push(emMode)
+chunk.push(`CASH SALE ${lineBreake}`)
+chunk.push(emModeOff)
+chunk.push(boldOff)
+chunk.push(`Pin No. ${data.company['company_registry']} ${lineBreake}`)
+chunk.push(`Date: ${data.date.localestring}`)
+chunk.push(lineBreake)
+chunk.push(lineBreake)
+chunk.push(alignLeft)
+chunk.push(boldOn)
+chunk.push(emMode)
+chunk.push(data.cashier)
+chunk.push(emModeOff)
+chunk.push(boldOff)
+chunk.push(lineBreake)
+chunk.push(lineBreake)
+chunk.push(line)
+chunk.push(`Item  Qty        Each             Total`)
+
+// Object.values(data.company).forEach(function(value) {
+//     let comapanyDetail = value+lineBreake;
+//   chunck.push(comapanyDetail)
+// })
+console.log(chunk)
+qz.print(config, chunk).catch(function(e) { console.error(e); });
+}
+const txLines = (lines)=>{
+    data.orderlines.forEach(function(line) {
+    chunck.push(line.product_name)
+    chunck.push(``)
+})
+}
+
+    /// Detection ///
+   
+     
+</script>
+
+</html>
