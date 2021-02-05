@@ -129,7 +129,7 @@
             qz.websocket.connect(config).then(function () {
                 // updateState('Active', 'success');
                 // findVersion();
-            }).catch((err)=>{
+            }).catch((err) => {
 
             });
         } else {
@@ -147,186 +147,260 @@
         }
     }
 
-    
-    
-var data={
-  "orderlines": [
-    {
-      "quantity": 1,
-      "unit_name": "Unit(s)",
-      "price": 920,
-      "discount": 0,
-      "product_name": "MAZDA 323 (96-) - CORNER LAMP (216-1644) - RH",
-      "price_display": 920,
-      "price_with_tax": 920,
-      "price_without_tax": 793.1,
-      "tax": 126.9,
-      "product_description": false,
-      "product_description_sale": false
-    },
-    {
-      "quantity": 1,
-      "unit_name": "Unit(s)",
-      "price": 2560,
-      "discount": 0,
-      "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - LH",
-      "price_display": 2560,
-      "price_with_tax": 2560,
-      "price_without_tax": 2206.9,
-      "tax": 353.1,
-      "product_description": false,
-      "product_description_sale": false
-    },
-    {
-      "quantity": 1,
-      "unit_name": "Unit(s)",
-      "price": 2560,
-      "discount": 0,
-      "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - RH",
-      "price_display": 2560,
-      "price_with_tax": 2560,
-      "price_without_tax": 2206.9,
-      "tax": 353.1,
-      "product_description": false,
-      "product_description_sale": false
-    }
-  ],
-  "paymentlines": [
-    {
-      "amount": 6040,
-      "journal": "Cash (KES)"
-    }
-  ],
-  "subtotal": 6040,
-  "total_with_tax": 6040.000000000001,
-  "total_without_tax": 5206.900000000001,
-  "total_tax": 833.1,
-  "total_paid": 6040,
-  "total_discount": 0,
-  "tax_details": [
-    {
-      "amount": 833.1,
-      "tax": {
-        "name": "Sales VAT 16.00% Inclusive",
-        "child_ids": [],
-        "amount": 0.16,
-        "child_depend": false,
-        "include_base_amount": false,
-        "type": "percent",
-        "id": 12,
-        "price_include": true,
-        "child_taxes": {}
-      },
-      "name": "Sales VAT 16.00% Inclusive"
-    }
-  ],
-  "change": -9.094947017729282e-13,
-  "name": "Order 00109-064-0048",
-  "client": null,
-  "invoice_id": null,
-  "cashier": "Administrator",
-  "header": "",
-  "footer": "",
-  "precision": {
-    "price": 2,
-    "money": 2,
-    "quantity": 3
-  },
-  "date": {
-    "year": 2021,
-    "month": 1,
-    "date": 3,
-    "day": 3,
-    "hour": 14,
-    "minute": 38,
-    "isostring": "2021-02-03T11:38:20.900Z",
-    "localestring": "2/3/2021, 2:38:20 PM"
-  },
-  "company": {
-    "email": "sales@autolampskenya.com",
-    "website": "http://www.autolampskenya.com",
-    "company_registry": "P051363500N",
-    "contact_address": "Autolamps Trading Ltd, Godown",
-    "vat": false,
-    "name": "Godown",
-    "phone": "0700-158482",
-  },
-  "shop": {
-    "name": "Stock"
-  },
-  "currency": {
-    "name": "KES",
-    "rounding": 0.01,
-    "symbol": "KSh",
-    "position": "after",
-    "id": 97,
-    "accuracy": 4,
-    "decimals": 2
-  }
-}
-const formatedReceipt=()=>{
-var config = qz.configs.create("Generic-Text-Only");
-let chunk = [];
-const init= '\x1B' + '\x40';
-const alignCenter = '\x1B' + '\x61' + '\x31';
-const lineBreake= '\x0A';
-const alignRight ='\x1B' + '\x61' + '\x32';
-const alignLeft ='\x1B' + '\x61' + '\x30';
-const boldOn ='\x1B' + '\x45' + '\x0D';
-const boldOff ='\x1B' + '\x45' + '\x0A';
-const emMode = '\x1B' + '\x21' + '\x30';
-const emModeOff ='\x1B' + '\x21' + '\x0A' + '\x1B' + '\x45' + '\x0A';
-const smallText= '\x1B' + '\x4D' + '\x31';
-const normalText ='\x1B' + '\x4D' + '\x30';
-const paperCut='\x1B' + '\x69';
-const line =  '------------------------------------------' + '\x0A';
 
-chunk.push(init);
-chunk.push(alignCenter)
-chunk.push(boldOn)
-chunk.push(emMode)
-chunk.push(data.company['contact_address']+lineBreake)
-chunk.push(emModeOff)
-chunk.push(boldOff)
-chunk.push(lineBreake)
-chunk.push(`${data.company['phone']}  ${data.company['email']+lineBreake}`)
-chunk.push(boldOn)
-chunk.push(emMode)
-chunk.push(`CASH SALE ${lineBreake}`)
-chunk.push(emModeOff)
-chunk.push(boldOff)
-chunk.push(`Pin No. ${data.company['company_registry']} ${lineBreake}`)
-chunk.push(`Date: ${data.date.localestring}`)
-chunk.push(lineBreake)
-chunk.push(lineBreake)
-chunk.push(alignLeft)
-chunk.push(boldOn)
-chunk.push(emMode)
-chunk.push(data.cashier)
-chunk.push(emModeOff)
-chunk.push(boldOff)
-chunk.push(lineBreake)
-chunk.push(lineBreake)
-chunk.push(line)
-chunk.push(`Item  Qty        Each             Total`)
+    let chunk = [];
+    var data = {
+        "orderlines": [
+            {
+                "quantity": 1,
+                "unit_name": "Unit(s)",
+                "price": 920,
+                "discount": 0,
+                "product_name": "MAZDA 323 (96-) - CORNER LAMP (216-1644) - RH",
+                "price_display": 920,
+                "price_with_tax": 920,
+                "price_without_tax": 793.1,
+                "tax": 126.9,
+                "product_description": false,
+                "product_description_sale": false
+            },
+            {
+                "quantity": 1,
+                "unit_name": "Unit(s)",
+                "price": 2560,
+                "discount": 0,
+                "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - LH",
+                "price_display": 2560,
+                "price_with_tax": 2560,
+                "price_without_tax": 2206.9,
+                "tax": 353.1,
+                "product_description": false,
+                "product_description_sale": false
+            },
+            {
+                "quantity": 1,
+                "unit_name": "Unit(s)",
+                "price": 2560,
+                "discount": 0,
+                "product_name": "TOYOTA TOWNACE 3SZ /XTD40 (08-11) - TAIL LAMP - RH",
+                "price_display": 2560,
+                "price_with_tax": 2560,
+                "price_without_tax": 2206.9,
+                "tax": 353.1,
+                "product_description": false,
+                "product_description_sale": false
+            }
+        ],
+        "paymentlines": [
+            {
+                "amount": 6040,
+                "journal": "Cash (KES)"
+            }
+        ],
+        "subtotal": 6040,
+        "total_with_tax": 6040.000000000001,
+        "total_without_tax": 5206.900000000001,
+        "total_tax": 833.1,
+        "total_paid": 6040,
+        "total_discount": 0,
+        "tax_details": [
+            {
+                "amount": 833.1,
+                "tax": {
+                    "name": "Sales VAT 16.00% Inclusive",
+                    "child_ids": [],
+                    "amount": 0.16,
+                    "child_depend": false,
+                    "include_base_amount": false,
+                    "type": "percent",
+                    "id": 12,
+                    "price_include": true,
+                    "child_taxes": {}
+                },
+                "name": "Sales VAT 16.00% Inclusive"
+            }
+        ],
+        "change": -9.094947017729282e-13,
+        "name": "Order 00109-064-0048",
+        "client": null,
+        "invoice_id": null,
+        "cashier": "Administrator",
+        "header": "",
+        "footer": "",
+        "precision": {
+            "price": 2,
+            "money": 2,
+            "quantity": 3
+        },
+        "date": {
+            "year": 2021,
+            "month": 1,
+            "date": 3,
+            "day": 3,
+            "hour": 14,
+            "minute": 38,
+            "isostring": "2021-02-03T11:38:20.900Z",
+            "localestring": "2/3/2021, 2:38:20 PM"
+        },
+        "company": {
+            "email": "sales@autolampskenya.com",
+            "website": "http://www.autolampskenya.com",
+            "company_registry": "P051363500N",
+            "contact_address": "Autolamps Trading Ltd, Godown",
+            "vat": false,
+            "name": "Godown",
+            "phone": "0700-158482",
+        },
+        "shop": {
+            "name": "Stock"
+        },
+        "currency": {
+            "name": "KES",
+            "rounding": 0.01,
+            "symbol": "KSh",
+            "position": "after",
+            "id": 97,
+            "accuracy": 4,
+            "decimals": 2
+        }
+    }
+    const init = '\x1B' + '\x40';
+    const alignCenter = '\x1B' + '\x61' + '\x31';
+    const lineBreake = '\x0A';
+    const alignRight = '\x1B' + '\x61' + '\x32';
+    const alignLeft = '\x1B' + '\x61' + '\x30';
+    const boldOn = '\x1B' + '\x45' + '\x0D';
+    const boldOff = '\x1B' + '\x45' + '\x0A';
+    const emMode = '\x1B' + '\x21' + '\x30';
+    const emModeOff = '\x1B' + '\x21' + '\x0A' + '\x1B' + '\x45' + '\x0A';
+    const smallText = '\x1B' + '\x4D' + '\x31';
+    const normalText = '\x1B' + '\x4D' + '\x30';
+    const paperCut = '\x1B' + '\x69';
+    const line = '-----------------------------------------------' + '\x0A';
+    const jsmode = 'ESC"a"0';
+    const lj = 'LF';
+    const PAD_LEFT = 'left';
+    const PAD_RIGHT = 'right';
+    const PAD_BOTH = 'both';
+    const formatedReceipt = () => {
+        var config = qz.configs.create("Generic-Text-Only", { copies: 1 });
 
-// Object.values(data.company).forEach(function(value) {
-//     let comapanyDetail = value+lineBreake;
-//   chunck.push(comapanyDetail)
-// })
-console.log(chunk)
-qz.print(config, chunk).catch(function(e) { console.error(e); });
-}
-const txLines = (lines)=>{
-    data.orderlines.forEach(function(line) {
-    chunck.push(line.product_name)
-    chunck.push(``)
-})
-}
+        let image = { type: 'raw', format: 'image', flavor: 'file', data: 'assets/img/pos.png', options: { language: "ESCPOS", dotDensity: 'double' } };
+        chunk.push(image)
+        chunk.push(init);
+        chunk.push(alignCenter)
+        chunk.push(boldOn)
+        chunk.push(emMode)
+        chunk.push(data.company['contact_address'] + lineBreake)
+        chunk.push(emModeOff)
+        chunk.push(boldOff)
+        chunk.push(lineBreake)
+        chunk.push(`${data.company['phone']}  ${data.company['email'] + lineBreake}`)
+        chunk.push(boldOn)
+        chunk.push(emMode)
+        chunk.push(`CASH SALE ${lineBreake}`)
+        chunk.push(emModeOff)
+        chunk.push(boldOff)
+        chunk.push(`Pin No. ${data.company['company_registry']} ${lineBreake}`)
+        chunk.push(`Date: ${data.date.localestring}`)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(alignLeft)
+        chunk.push(boldOn)
+        chunk.push(emMode)
+        chunk.push(data.cashier)
+        chunk.push(emModeOff)
+        chunk.push(boldOff)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(line)
+        chunk.push(`Item  Qty        Each                Total${lineBreake}`)
 
+        chunk.push(line)
+        txLines(data.orderlines)
+        chunk.push(line)
+
+        chunk.push(boldOn)
+        chunk.push(properties())
+
+        chunk.push(boldOff)
+        chunk.push(lineBreake)
+        chunk.push(line)
+        chunk.push(lineBreake)
+        chunk.push(alignCenter)
+        chunk.push(boldOn)
+        chunk.push(emMode)
+        chunk.push(`FISCAL SIGNATURE`)
+        chunk.push(emModeOff)
+        chunk.push(boldOff)
+        chunk.push(lineBreake)
+        chunk.push(smallText)
+        chunk.push(`9RUWIWIEW99JEKWEIUEIWEIEE09303DJKFJKRJFKJFKJFJFOIROIWOEIOWFIOIFKNFNRIUIRUIURFUIFUI`)
+        chunk.push(lineBreake)
+        chunk.push(line)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(lineBreake)
+        chunk.push(paperCut)
+
+        // Object.values(data.company).forEach(function(value) {
+        //     let comapanyDetail = value+lineBreake;
+        //   chunck.push(comapanyDetail)
+        // })
+        console.log(chunk)
+        qz.print(config, chunk).catch(function (e) { console.error(e); });
+    }
+    const txLines = (lines) => {
+        data.orderlines.forEach(function (line) {
+            chunk.push(alignLeft)
+            chunk.push(line.product_name + lineBreake)
+            chunk.push(alignCenter)
+            chunk.push(`71300  ${line.quantity}         ${line.price}                 ${line.price_display} ${lineBreake}`)
+        })
+    }
+    const properties = () => {
+        let widest = 0;
+        let lines = [];
+        var paymentlines = [
+            { name: 'TOTAL', value: Math.trunc(data.total_with_tax) },
+            { name: 'CASH PAID', value: Math.trunc(data.total_paid) },
+            { name: 'CHANGE', value: Math.trunc(data.change) },
+
+        ]
+        for (let line of paymentlines) {
+            lines.push([
+                pad(line.name, ' ', 40 - 18, PAD_RIGHT),
+                // utils.pad('Product', ' ', this.config.width - 18, utils.PAD_RIGHT),
+                pad(line.value, ' ', 18, PAD_LEFT)
+            ].join(''));
+        }
+        return lines.join('\n');
+    }
     /// Detection ///
-   
-     
+
+    const pad = (value, char, length, side) => {
+        side = typeof side === 'undefined' ? 'right' : side;
+
+        let padding = '';
+        let required = Math.floor(length) - value.toString().length;
+
+        while (required > 0) {
+            required -= 1;
+
+            if (side === PAD_LEFT) value = char + value;
+            if (side === PAD_RIGHT) value = value + char;
+
+            if (side === PAD_BOTH) {
+                if (required % 2 === 0) value = char + value;
+                else value = value + char;
+            }
+        }
+
+        return value;
+    }  
 </script>
 
 </html>
